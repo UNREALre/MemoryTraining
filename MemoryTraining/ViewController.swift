@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreData
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     var firstContainer: UIView!
     var secondContainer: UIView!
@@ -53,6 +54,10 @@ class ViewController: UIViewController {
     var defaultImage = MainImages(id: 0, name: "default", image: UIImage(named: "default"))
     var openedImages: [[MainImages]] = []
     
+    
+    let managedObject = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext!
+    var fetchedResultsController: NSFetchedResultsController = NSFetchedResultsController()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -62,6 +67,10 @@ class ViewController: UIViewController {
         setupSecondContainer()
         setupThirdContainer()
         setupFourthContainer()
+        
+        fetchedResultsController = getFetchResultsController()
+        fetchedResultsController.delegate = self
+        fetchedResultsController.performFetch(nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -111,15 +120,15 @@ class ViewController: UIViewController {
         }
     }
     func mainImagePressed(button: UIButton) {
-        if !disableButtons {
-            var selectedPreview = 0
-            for but in picButtons {
-                if but.layer.borderWidth > 0 {
-                    selectedPreview = but.tag
-                    break
-                }
+        var selectedPreview = 0
+        for but in picButtons {
+            if but.layer.borderWidth > 0 {
+                selectedPreview = but.tag
+                break
             }
-            
+        }
+        
+        if !disableButtons && selectedPreview > 0 {
             if button.tag == selectedPreview {
                 var sourceImage = Factory.getImageByID(button.tag)
                 var row: Int?
@@ -169,6 +178,16 @@ class ViewController: UIViewController {
                         self.loseLabel.sizeToFit()
                         self.loseLabel.center = CGPointMake(self.secondContainer.bounds.width * kHalf, self.secondContainer.bounds.height * kHalf)
                         self.secondContainer.addSubview(loseLabel)
+                        
+                        let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+                        let managedObjectContext = appDelegate.managedObjectContext
+                        let entityDescription = NSEntityDescription.entityForName("History", inManagedObjectContext: managedObjectContext!)
+                        let currentItem = History(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
+                        
+                        currentItem.level = level
+                        currentItem.date = NSDate()
+                        
+                        appDelegate.saveContext()
                     }
                 }
             }
@@ -182,8 +201,22 @@ class ViewController: UIViewController {
                 self.loseLabel.sizeToFit()
                 self.loseLabel.center = CGPointMake(self.secondContainer.bounds.width * kHalf, self.secondContainer.bounds.height * kHalf)
                 self.secondContainer.addSubview(loseLabel)
+                
+                let appDelegate = (UIApplication.sharedApplication().delegate as AppDelegate)
+                let managedObjectContext = appDelegate.managedObjectContext
+                let entityDescription = NSEntityDescription.entityForName("History", inManagedObjectContext: managedObjectContext!)
+                let currentItem = History(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext!)
+                
+                currentItem.level = level
+                currentItem.date = NSDate()
+                
+                appDelegate.saveContext()
             }
         }
+    }
+    
+    func showHistoryButtonPressed(button: UIButton) {
+        self.performSegueWithIdentifier("showHistoryTable", sender: self)
     }
     //IBAction functions end
     
@@ -249,7 +282,7 @@ class ViewController: UIViewController {
         self.view.addSubview(thirdContainer)
         
         self.fourthContainer = UIView(frame: CGRectMake(self.view.bounds.origin.x + kMarginForView, self.view.bounds.origin.y + self.firstContainer.bounds.height + self.secondContainer.bounds.height + self.thirdContainer.bounds.height + 20, self.view.bounds.width - (kMarginForView*2), self.view.bounds.height * kParts))
-        self.fourthContainer.backgroundColor = UIColor.magentaColor()
+        self.fourthContainer.backgroundColor = UIColor.whiteColor()
         self.view.addSubview(fourthContainer)
     }
     
@@ -360,7 +393,6 @@ class ViewController: UIViewController {
         self.startGameButton.setTitle("Начать игру!", forState: UIControlState.Normal)
         self.startGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
         self.startGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
-        self.startGameButton.backgroundColor = UIColor.lightGrayColor()
         self.startGameButton.sizeToFit()
         self.startGameButton.center = CGPointMake(self.fourthContainer.bounds.width * kHalf / 2, self.fourthContainer.bounds.height * kHalf)
         self.startGameButton.addTarget(self, action: "startGameButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -370,12 +402,19 @@ class ViewController: UIViewController {
         self.resetGameButton.setTitle("Начать сначала", forState: UIControlState.Normal)
         self.resetGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
         self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
-        self.resetGameButton.backgroundColor = UIColor.lightGrayColor()
         self.resetGameButton.sizeToFit()
         self.resetGameButton.center = CGPointMake(self.fourthContainer.bounds.width * kHalf, self.fourthContainer.bounds.height * kHalf)
         self.resetGameButton.addTarget(self, action: "resetGameButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
         self.fourthContainer.addSubview(resetGameButton)
 
+        self.resetGameButton = UIButton()
+        self.resetGameButton.setTitle("Таблица успехов", forState: UIControlState.Normal)
+        self.resetGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
+        self.resetGameButton.sizeToFit()
+        self.resetGameButton.center = CGPointMake(self.fourthContainer.bounds.width * 3/4, self.fourthContainer.bounds.height * kHalf)
+        self.resetGameButton.addTarget(self, action: "showHistoryButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
+        self.fourthContainer.addSubview(resetGameButton)
     }
     
     func removeImageViews() {
@@ -396,6 +435,26 @@ class ViewController: UIViewController {
     }
     
     //Helper functions end
+    
+    
+    //Data Core Functions
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+    }
+    
+    func pillsFetchRequest() -> NSFetchRequest {
+        let fetchRequest = NSFetchRequest(entityName: "History")
+        let activeSortDescriptor = NSSortDescriptor(key: "date", ascending: false)
+        fetchRequest.sortDescriptors = [activeSortDescriptor]
+        
+        return fetchRequest
+    }
+    
+    func getFetchResultsController() -> NSFetchedResultsController {
+        fetchedResultsController = NSFetchedResultsController(fetchRequest: pillsFetchRequest(), managedObjectContext: managedObject, sectionNameKeyPath: nil, cacheName: nil)
+        
+        return fetchedResultsController
+    }
+    //Data Core Functions end
     
 }
 

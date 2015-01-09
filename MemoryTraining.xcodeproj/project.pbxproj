@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		506078FC1A60637300CAF79D /* History.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506078FB1A60637300CAF79D /* History.swift */; };
+		506079001A6064F500CAF79D /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506078FF1A6064F500CAF79D /* HistoryViewController.swift */; };
+		506079021A60652200CAF79D /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 506079011A60652200CAF79D /* HistoryTableViewCell.swift */; };
 		50BFFE1F1A5FE4C000F53204 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BFFE1E1A5FE4C000F53204 /* AppDelegate.swift */; };
 		50BFFE221A5FE4C000F53204 /* MemoryTraining.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 50BFFE201A5FE4C000F53204 /* MemoryTraining.xcdatamodeld */; };
 		50BFFE241A5FE4C000F53204 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50BFFE231A5FE4C000F53204 /* ViewController.swift */; };
@@ -29,6 +32,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		506078FB1A60637300CAF79D /* History.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = History.swift; sourceTree = "<group>"; };
+		506078FF1A6064F500CAF79D /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
+		506079011A60652200CAF79D /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
 		50BFFE191A5FE4C000F53204 /* MemoryTraining.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MemoryTraining.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		50BFFE1D1A5FE4C000F53204 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		50BFFE1E1A5FE4C000F53204 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -124,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				50BFFE411A5FFC4900F53204 /* MainImages.swift */,
+				506078FB1A60637300CAF79D /* History.swift */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -132,6 +139,8 @@
 			isa = PBXGroup;
 			children = (
 				50BFFE231A5FE4C000F53204 /* ViewController.swift */,
+				506078FF1A6064F500CAF79D /* HistoryViewController.swift */,
+				506079011A60652200CAF79D /* HistoryTableViewCell.swift */,
 				50BFFE451A5FFFA400F53204 /* Factory.swift */,
 			);
 			name = Controllers;
@@ -238,10 +247,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				506078FC1A60637300CAF79D /* History.swift in Sources */,
 				50BFFE241A5FE4C000F53204 /* ViewController.swift in Sources */,
+				506079021A60652200CAF79D /* HistoryTableViewCell.swift in Sources */,
 				50BFFE221A5FE4C000F53204 /* MemoryTraining.xcdatamodeld in Sources */,
 				50BFFE421A5FFC4900F53204 /* MainImages.swift in Sources */,
 				50BFFE1F1A5FE4C000F53204 /* AppDelegate.swift in Sources */,
+				506079001A6064F500CAF79D /* HistoryViewController.swift in Sources */,
 				50BFFE461A5FFFA400F53204 /* Factory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,6 +450,7 @@
 				50BFFE3D1A5FE4C000F53204 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		50BFFE3E1A5FE4C000F53204 /* Build configuration list for PBXNativeTarget "MemoryTrainingTests" */ = {
 			isa = XCConfigurationList;
@@ -446,6 +459,7 @@
 				50BFFE401A5FE4C000F53204 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
