@@ -41,7 +41,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
     let iRows = 3
     let iCols = 3
-    let hideInterval:Double = 3.0
+    let hideInterval:Double = 6.0
     
     var disableButtons = true
     
@@ -392,7 +392,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         self.startGameButton = UIButton()
         self.startGameButton.setTitle("Начать игру!", forState: UIControlState.Normal)
         self.startGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
-        self.startGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
+        self.startGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 16)
         self.startGameButton.sizeToFit()
         self.startGameButton.center = CGPointMake(self.fourthContainer.bounds.width * kHalf / 2, self.fourthContainer.bounds.height * kHalf)
         self.startGameButton.addTarget(self, action: "startGameButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -401,7 +401,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         self.resetGameButton = UIButton()
         self.resetGameButton.setTitle("Начать сначала", forState: UIControlState.Normal)
         self.resetGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
-        self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
+        self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 16)
         self.resetGameButton.sizeToFit()
         self.resetGameButton.center = CGPointMake(self.fourthContainer.bounds.width * kHalf, self.fourthContainer.bounds.height * kHalf)
         self.resetGameButton.addTarget(self, action: "resetGameButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
@@ -410,7 +410,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         self.resetGameButton = UIButton()
         self.resetGameButton.setTitle("Таблица успехов", forState: UIControlState.Normal)
         self.resetGameButton.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
-        self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 12)
+        self.resetGameButton.titleLabel?.font = UIFont(name: "Superclarendon-Bold", size: 16)
         self.resetGameButton.sizeToFit()
         self.resetGameButton.center = CGPointMake(self.fourthContainer.bounds.width * 3/4, self.fourthContainer.bounds.height * kHalf)
         self.resetGameButton.addTarget(self, action: "showHistoryButtonPressed:", forControlEvents: UIControlEvents.TouchUpInside)
