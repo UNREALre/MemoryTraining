@@ -58,6 +58,17 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let managedObject = (UIApplication.sharedApplication().delegate as AppDelegate).managedObjectContext!
     var fetchedResultsController: NSFetchedResultsController = NSFetchedResultsController()
     
+    var gameAnnouncer: Announcer = Announcer()
+    
+    //Временные константы проигрывания Announcer-ов
+    let startDelay: Double = 35.0
+    let betweenLevelsDelay: Double = 12.0
+    let winAnnounceDelay: Double = 8.0
+    let flawlessVictoryLeday: Double = 8.0
+    let failDelay: Double = 11.0
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -82,6 +93,12 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     //IBAction functions
     func startGameButtonPressed(button: UIButton?) {
         if level == 0 {
+            
+            gameAnnouncer.fileToPlay = "2"
+            gameAnnouncer.fileExtensionToPlay = "mp3"
+            gameAnnouncer.readFileIntoAVPlayer()
+            [NSThread .sleepForTimeInterval(startDelay)];
+            
             removeImageViews()
             currentShownPics.removeAll(keepCapacity: true)
             picButtons.removeAll(keepCapacity: true)
@@ -95,13 +112,17 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
             mainImages = Factory.createMainImages(level)
             previewImages = Factory.createPreviewImages()
             
-            setupSecondContainer()
             setupThirdContainer()
+            setupSecondContainer()
             
             updateMainView()
             
             NSTimer.scheduledTimerWithTimeInterval(hideInterval, target: self, selector: Selector("hidePictures"), userInfo:nil, repeats:false)
         }
+    }
+    
+    func playAnnouncer(myTimer: NSTimer) {
+        println(myTimer.userInfo)
     }
     
     func resetGameButtonPressed(button: UIButton) {
@@ -163,13 +184,29 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
                 }
                 
                 setupSecondContainer(isDefault: true, imagesToFill: openedImages)
+                removeSelectedPreviews()
                 
                 if currentShownPics.count == cOpened {
                     if level < 9 {
+                        gameAnnouncer.fileToPlay = "victory"
+                        gameAnnouncer.fileExtensionToPlay = "mp3"
+                        gameAnnouncer.readFileIntoAVPlayer()
+                        [NSThread .sleepForTimeInterval(winAnnounceDelay)];
+                        var nextLevel = level + 1
+                        gameAnnouncer.fileToPlay = "level\(nextLevel)"
+                        gameAnnouncer.fileExtensionToPlay = "mp3"
+                        gameAnnouncer.readFileIntoAVPlayer()
+                        [NSThread .sleepForTimeInterval(betweenLevelsDelay)];
+                        
                         goToNextLevel()
                     }
                     else {
                         removeImageViews()
+
+                        gameAnnouncer.fileToPlay = "flawless-vicotory"
+                        gameAnnouncer.fileExtensionToPlay = "mp3"
+                        gameAnnouncer.readFileIntoAVPlayer()
+                        [NSThread .sleepForTimeInterval(flawlessVictoryLeday)];
                         
                         self.loseLabel = UILabel()
                         self.loseLabel.text = "Кроля, ты УМНИЧКА!!! Победа! :-)"
@@ -192,6 +229,11 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
                 }
             }
             else {
+                gameAnnouncer.fileToPlay = "fail"
+                gameAnnouncer.fileExtensionToPlay = "mp3"
+                gameAnnouncer.readFileIntoAVPlayer()
+                [NSThread .sleepForTimeInterval(failDelay)];
+                
                 removeImageViews()
                 
                 self.loseLabel = UILabel()
@@ -223,6 +265,18 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
 
     //Helper functions
+    func removeSelectedPreviews() {
+        let container: UIView = self.thirdContainer!
+        let subViews: Array = container.subviews
+        for view in subViews {
+            view.removeFromSuperview()
+        }
+        
+        picButtons.removeAll(keepCapacity: true)
+        
+        setupThirdContainer()
+    }
+    
     func goToNextLevel() {
         disableButtons = true
         
