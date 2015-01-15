@@ -68,7 +68,6 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     let failDelay: Double = 11.0
     
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -93,11 +92,12 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     //IBAction functions
     func startGameButtonPressed(button: UIButton?) {
         if level == 0 {
-            
+            /*
             gameAnnouncer.fileToPlay = "2"
             gameAnnouncer.fileExtensionToPlay = "mp3"
             gameAnnouncer.readFileIntoAVPlayer()
             [NSThread .sleepForTimeInterval(startDelay)];
+            */
             
             removeImageViews()
             currentShownPics.removeAll(keepCapacity: true)
@@ -121,13 +121,11 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
         }
     }
     
-    func playAnnouncer(myTimer: NSTimer) {
-        println(myTimer.userInfo)
-    }
-    
     func resetGameButtonPressed(button: UIButton) {
-        level = 0
-        startGameButtonPressed(button)
+        if level > 0 {
+            level = 0
+            startGameButtonPressed(button)
+        }
     }
     
     func previewImagePressed(button: UIButton) {
@@ -182,12 +180,17 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
                         }
                     }
                 }
-                
+
                 setupSecondContainer(isDefault: true, imagesToFill: openedImages)
                 removeSelectedPreviews()
+
                 
                 if currentShownPics.count == cOpened {
                     if level < 9 {
+
+                        let redrawThread = NSThread(target: self, selector: "redrawSecondContainer", object: nil)
+                        redrawThread.start()
+
                         gameAnnouncer.fileToPlay = "victory"
                         gameAnnouncer.fileExtensionToPlay = "mp3"
                         gameAnnouncer.readFileIntoAVPlayer()
@@ -197,7 +200,7 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
                         gameAnnouncer.fileExtensionToPlay = "mp3"
                         gameAnnouncer.readFileIntoAVPlayer()
                         [NSThread .sleepForTimeInterval(betweenLevelsDelay)];
-                        
+
                         goToNextLevel()
                     }
                     else {
@@ -265,6 +268,23 @@ class ViewController: UIViewController, NSFetchedResultsControllerDelegate {
     
 
     //Helper functions
+    func redrawSecondContainer() {
+        for var i=0; i<self.iRows; i++ {
+            for var j=0; j<self.iCols; j++ {
+                var imageView = UIImageView()
+                var imageViewButton = UIButton()
+                
+                var currentImage = self.openedImages[i][j]
+                imageView.image = currentImage.image
+                
+                imageView.frame = CGRectMake(self.secondContainer.bounds.origin.x + (self.secondContainer.bounds.width * self.kThird * CGFloat(j)), self.secondContainer.bounds.origin.y + (self.secondContainer.bounds.height * self.kThird * CGFloat(i)), self.secondContainer.bounds.width * self.kThird - self.kMarginForPic, self.secondContainer.bounds.height * self.kThird - self.kMarginForPic)
+                
+                
+                self.secondContainer.addSubview(imageView)
+            }
+        }
+    }
+    
     func removeSelectedPreviews() {
         let container: UIView = self.thirdContainer!
         let subViews: Array = container.subviews
